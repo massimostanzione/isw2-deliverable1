@@ -1,0 +1,20 @@
+package it.uniroma2.dicii.isw2.deliverable1.io;
+
+import it.uniroma2.dicii.isw2.deliverable1.utils.LoggerInst;
+
+import java.io.FileWriter;
+import java.util.logging.Logger;
+
+/**
+ * Realization of <code>Exporter</code>. Common base class for all the specializations.
+ * This is more useful in deliverable II, since there are both CSV and ARFF formats to be managed.
+ */
+public abstract class ExporterPrinter implements Exporter {
+    private static Logger instance = null;
+    protected static FileWriter fileWriter;
+    protected static Logger LOG = LoggerInst.getSingletonInstance();
+
+    protected static void printLog(String outname) {
+        LOG.fine("Exporting dataset to " + outname + ".");
+    }
+}
