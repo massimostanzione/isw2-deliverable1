@@ -66,7 +66,7 @@ public class ProjectAnalyzer {
                 t.setFixTimestamp(new Date(0));
             }
         }
-        CSVExporterPrinter.convertAndExport(tickets, "/output/" + p.getName() + "/inspection/tickets.csv");
+        CSVExporterPrinter.getSingletonInstance().convertAndExport(tickets, "/output/" + p.getName() + "/inspection/tickets.csv");
         // Sort by date
         try {
             CollectionSorter.sort(tickets, Ticket.class.getDeclaredMethod("getFixTimestamp"));
@@ -101,7 +101,7 @@ public class ProjectAnalyzer {
                 ret.add(new DeliverableOneOutput(t.getFixTimestamp(), 1));
             }
         }
-        CSVExporterPrinter.convertAndExport(ret, "/output/" + p.getName() + "/output.csv");
+        CSVExporterPrinter.getSingletonInstance().convertAndExport(ret, "/output/" + p.getName() + "/output.csv");
     }
 
     /**

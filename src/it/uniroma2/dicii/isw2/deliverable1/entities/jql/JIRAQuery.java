@@ -16,12 +16,12 @@ import java.util.Map;
  * with respect to the "low-level" JQL syntax.
  */
 public class JIRAQuery {
-    private final static String JIRA_QUERY_PREFIX = "https://issues.apache.org/jira/rest/api/2/";
-    private final static String JQL_QUERY_START = "jql";
-    private final static String JIRA_PROJECT = "project";
-    private final static String JIRA_FIELDS = "fields";
-    private final static String JIRA_START_AT = "startAt";
-    private final static String JIRA_MAX_RESULTS = "maxResults";
+    private static final String JIRA_QUERY_PREFIX = "https://issues.apache.org/jira/rest/api/2/";
+    private static final String JQL_QUERY_START = "jql";
+    private static final String JIRA_PROJECT = "project";
+    private static final String JIRA_FIELDS = "fields";
+    private static final String JIRA_START_AT = "startAt";
+    private static final String JIRA_MAX_RESULTS = "maxResults";
 
     private JIRAQueryType queryType;
     private JQLQuery jqlQuery = new JQLQuery();

@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 public abstract class ExporterPrinter implements Exporter {
     protected static FileWriter fileWriter;
     protected static Logger log = LoggerInst.getSingletonInstance();
-
     protected ExporterPrinter() {
         // To avoid instantiation
     }

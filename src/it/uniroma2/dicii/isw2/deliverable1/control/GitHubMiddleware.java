@@ -56,8 +56,9 @@ public class GitHubMiddleware {
                 log.info(() -> "- Working copy already exists locally at " + sb.toString() + ".");
             }
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            sb.append("/.git");
             Repository repo = builder
-                    .setGitDir(new File(GitHubMiddleware.DEFAULT_GIT_WORKINGCOPY_PATH + "/" + projName + "/.git"))
+                    .setGitDir(new File(sb.toString()))
                     .setMustExist(true).build();
             Git git = new Git(repo);
             ret.setGit(git);
@@ -98,7 +99,7 @@ public class GitHubMiddleware {
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
-        CSVExporterPrinter.convertAndExport(commits, "/output/" + projName + "/inspection/commits.csv");
+        CSVExporterPrinter.getSingletonInstance().convertAndExport(commits, "/output/" + projName + "/inspection/commits.csv");
         log.info(() -> "- " + commits.size() + " commits found.");
         return commits;
     }

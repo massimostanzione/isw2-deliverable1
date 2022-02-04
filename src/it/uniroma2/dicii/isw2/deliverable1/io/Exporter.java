@@ -6,14 +6,17 @@ import java.util.List;
  * A Exporter, that can be specialized to export dataset in a specific standardized way.
  */
 public interface Exporter {
+    static Exporter getSingletonInstance() {
+        return null;
+    }
+
     /**
      * Export dataset to a file file
      *
      * @param dataset dataset to be exported
      * @param outname output file
      */
-    static void export(List<List<String>> dataset, String outname) {
-    }
+    void export(List<List<String>> dataset, String outname);
 
     /**
      * Adapt dataset to a standardized dataset that can be arranged in a specific way.
@@ -21,9 +24,7 @@ public interface Exporter {
      * @param objList dataset to be adapted.
      * @return adapted dataset
      */
-    static List<List<String>> convertToCSVExportable(List<?> objList) {
-        return null;
-    }
+    List<List<String>> convertToCSVExportable(List<?> objList);
 
     /**
      * Adapt a dataset and export it to a specific format in a standardized way.
@@ -33,4 +34,6 @@ public interface Exporter {
      */
     static void convertAndExport(List<?> objList, String path) {
     }
+
+    ;
 }

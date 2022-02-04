@@ -14,9 +14,16 @@ import java.util.stream.Stream;
  * A CSV exporter tool, used to export dataset in a standardized way.
  */
 public class CSVExporterPrinter extends ExporterPrinter {
-
+    private static CSVExporterPrinter instance;
     private CSVExporterPrinter() {
         super();
+    }
+
+    public static CSVExporterPrinter getSingletonInstance() {
+        if (instance == null)
+            instance = new CSVExporterPrinter();
+
+        return instance;
     }
 
     /**
@@ -25,7 +32,7 @@ public class CSVExporterPrinter extends ExporterPrinter {
      * @param dataset dataset to be exported
      * @param outname output file
      */
-    public static void export(List<List<String>> dataset, String outname) {
+    public void export(List<List<String>> dataset, String outname) {
         outname = System.getProperty("user.dir") + outname;
         printLog(outname);
         try {
@@ -62,7 +69,7 @@ public class CSVExporterPrinter extends ExporterPrinter {
      * @return adapted dataset
      * @see ExportableAsDatasetRecord
      */
-    public static List<List<String>> convertToCSVExportable(List<?> objList) {
+    public List<List<String>> convertToCSVExportable(List<?> objList) {
         List<List<String>> ret = new ArrayList<>();
         if (!objList.isEmpty()) {
             ret = Stream
@@ -82,7 +89,7 @@ public class CSVExporterPrinter extends ExporterPrinter {
      * @param objList dataset to be adapted and exported
      * @param path    output file name
      */
-    public static void convertAndExport(List<?> objList, String path) {
+    public void convertAndExport(List<?> objList, String path) {
         export(convertToCSVExportable(objList), path);
     }
 }
