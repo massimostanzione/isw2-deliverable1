@@ -48,18 +48,17 @@ public class ProjectAnalyzer {
      * @return ticket list with fix dates
      */
     private List<Ticket> arrangeFixTimestamp(List<Ticket> tickets) {
-        int count = 0;
+        Integer count = 0;
         for (Ticket t : tickets) {
             List<Commit> relatedCommits = t.getCommitList();
             if (relatedCommits != null) {
-                count += t.getCommitList().size();
+                count = count + t.getCommitList().size();
                 Commit first = relatedCommits.get(0);
                 Date last = first.getDate();
                 for (Integer j = 0; j < relatedCommits.size(); j++) {
                     if (relatedCommits.get(j).getDate() != null && relatedCommits.get(j).getDate().after(last)) {
                         last = relatedCommits.get(j).getDate();
                     }
-
                 }
                 t.setFixTimestamp(last);
             } else {
@@ -85,7 +84,7 @@ public class ProjectAnalyzer {
     public void groupAndExport(List<Ticket> tickets) {
         Calendar cItem = Calendar.getInstance();
         Calendar cTicket = Calendar.getInstance();
-        List<DeliverableOneOutput> ret = new ArrayList<DeliverableOneOutput>();
+        List<DeliverableOneOutput> ret = new ArrayList<>();
         for (Ticket t : tickets) {
             boolean found = false;
             for (DeliverableOneOutput item : ret) {

@@ -9,13 +9,11 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.TextProgressMonitor;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -47,14 +45,15 @@ public class GitHubMiddleware {
         ret = new GitWorkingCopy();
         log.info(() -> "Checking for working copy...");
         try {
-            if (!Files.exists(Path.of(DEFAULT_GIT_WORKINGCOPY_PATH + "/" + projName))) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(DEFAULT_GIT_WORKINGCOPY_PATH).append("/").append(projName);
+            if (!Files.exists(Path.of(sb.toString()))) {
                 log.info(() -> "- Creating working copy. It may take a while, please wait...");
                 Git.cloneRepository()
-                        .setProgressMonitor(new TextProgressMonitor(new PrintWriter(System.err)))
-                        .setURI(remote).setBranch(version).setDirectory(new File(DEFAULT_GIT_WORKINGCOPY_PATH + "/" + projName)).call();
+                        .setURI(remote).setBranch(version).setDirectory(new File(sb.toString())).call();
                 log.info(() -> "- Working copy is ready.");
             } else {
-                log.info(() -> "- Working copy already exists locally at " + DEFAULT_GIT_WORKINGCOPY_PATH + "/" + projName + ".");
+                log.info(() -> "- Working copy already exists locally at " + sb.toString() + ".");
             }
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             Repository repo = builder
@@ -78,32 +77,27 @@ public class GitHubMiddleware {
     public static List<Commit> extractCommits(String projName) {
         log.info(() -> "Extracting commits...");
         List<Commit> commits = new ArrayList<>();
-        Iterator<RevCommit> iter = null;
         // Extract raw RevCommit iterator
         try {
-            iter = ret.getGit().log().all().call().iterator();
-        } catch (RevisionSyntaxException | GitAPIException | IOException e) {
-            e.printStackTrace();
-        }
-        // Iterate through raw commits and convert them
-        try {
+            Iterator<RevCommit> iter = ret.getGit().log().all().call().iterator();
+            // Iterate through raw commits and convert them
             while (iter.hasNext()) {
-                RevCommit iteratedCommit = iter.next();// ?
+                RevCommit iteratedCommit = iter.next();
                 if (iteratedCommit.getParentCount() > 0) {
                     Commit c = new Commit(iteratedCommit);
                     commits.add(c);
                 }
             }
-        } catch (NullPointerException e) {
+        } catch (RevisionSyntaxException | GitAPIException | IOException e) {
             e.printStackTrace();
         }
+
         // Sort commit by their date
         try {
             CollectionSorter.sort(commits, Commit.class.getDeclaredMethod("getDate"));
         } catch (NoSuchMethodException | SecurityException e) {
             e.printStackTrace();
         }
-
         CSVExporterPrinter.convertAndExport(commits, "/output/" + projName + "/inspection/commits.csv");
         log.info(() -> "- " + commits.size() + " commits found.");
         return commits;

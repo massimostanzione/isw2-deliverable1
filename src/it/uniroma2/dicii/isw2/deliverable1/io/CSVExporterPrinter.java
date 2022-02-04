@@ -14,6 +14,11 @@ import java.util.stream.Stream;
  * A CSV exporter tool, used to export dataset in a standardized way.
  */
 public class CSVExporterPrinter extends ExporterPrinter {
+
+    private CSVExporterPrinter() {
+        super();
+    }
+
     /**
      * Export dataset to a CSV file
      *
@@ -35,7 +40,7 @@ public class CSVExporterPrinter extends ExporterPrinter {
             if (!dataset.isEmpty()) {
                 Integer recordDim = dataset.get(0).size();
                 for (List<String> datasetRecord : dataset) {
-                    i++;
+                    i = i + 1;
                     j = -1;
                     for (String value : datasetRecord) {
                         j++;

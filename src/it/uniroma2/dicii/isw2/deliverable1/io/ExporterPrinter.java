@@ -13,6 +13,10 @@ public abstract class ExporterPrinter implements Exporter {
     protected static FileWriter fileWriter;
     protected static Logger log = LoggerInst.getSingletonInstance();
 
+    protected ExporterPrinter() {
+        // To avoid instantiation
+    }
+
     protected static void printLog(String outname) {
         log.fine(() -> "Exporting dataset to " + outname + ".");
     }

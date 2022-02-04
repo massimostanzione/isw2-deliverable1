@@ -23,7 +23,7 @@ public class CollectionSorter {
     public static void sort(List<?> list, Method method) {
         Collections.sort(list, (Comparator<Object>) (o1, o2) -> {
             try {
-                return ((Comparable<Comparable>) method.invoke(o1)).compareTo((Comparable<Comparable>) method.invoke(o2));
+                return ((Comparable<Object>) method.invoke(o1)).compareTo((Comparable<Object>) method.invoke(o2));
             } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 e.printStackTrace();
             }

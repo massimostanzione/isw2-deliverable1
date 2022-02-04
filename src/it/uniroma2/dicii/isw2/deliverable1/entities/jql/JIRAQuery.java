@@ -16,12 +16,12 @@ import java.util.Map;
  * with respect to the "low-level" JQL syntax.
  */
 public class JIRAQuery {
-    private final String JIRA_QUERY_PREFIX = "https://issues.apache.org/jira/rest/api/2/";
-    private final String JQL_QUERY_START = "jql";
-    private final String JIRA_PROJECT = "project";
-    private final String JIRA_FIELDS = "fields";
-    private final String JIRA_START_AT = "startAt";
-    private final String JIRA_MAX_RESULTS = "maxResults";
+    private final static String JIRA_QUERY_PREFIX = "https://issues.apache.org/jira/rest/api/2/";
+    private final static String JQL_QUERY_START = "jql";
+    private final static String JIRA_PROJECT = "project";
+    private final static String JIRA_FIELDS = "fields";
+    private final static String JIRA_START_AT = "startAt";
+    private final static String JIRA_MAX_RESULTS = "maxResults";
 
     private JIRAQueryType queryType;
     private JQLQuery jqlQuery = new JQLQuery();
@@ -49,9 +49,9 @@ public class JIRAQuery {
     }
 
     /**
-     * Compose the JQL Query and the final URL that will be used for the JIRA JQL query.
+     * Compose the JQL Query and the final static URL that will be used for the JIRA JQL query.
      *
-     * @return the final URL for the JQL query
+     * @return the final static URL for the JQL query
      */
     public URL compose() {
         URIBuilder b = null;

@@ -1,34 +1,29 @@
 package it.uniroma2.dicii.isw2.deliverable1.utils;
 
-import java.util.Date;
-import java.util.logging.*;
-import java.util.regex.Pattern;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Unique logger for the whole project.
  * Implemented with the <i>singleton</i> design pattern.
  */
 public class LoggerInst {
-    private static Logger instance;
+    private static Logger instance = null;
+
+    static {
+        InputStream stream = LoggerInst.class.getClassLoader().
+                getResourceAsStream("logging.properties");
+        try {
+            LogManager.getLogManager().readConfiguration(stream);
+            instance = Logger.getLogger(LoggerInst.class.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private LoggerInst() {
-        instance = Logger.getLogger(this.getClass().getName());
-        Handler handlerObj = new ConsoleHandler();
-
-        // Set to Level.FINE to obtain more verbose log
-        handlerObj.setLevel(Level.FINE);
-        handlerObj.setFormatter(new SimpleFormatter() {
-            private Pattern regex = Pattern.compile("[%1$tF %1$tT] [%2$-7s] %3$s %n");
-
-            @Override
-            public synchronized String format(LogRecord lr) {
-                return String.format(regex.pattern(), new Date(lr.getMillis()), lr.getLevel().getLocalizedName(),
-                        lr.getMessage());
-            }
-        });
-        instance.addHandler(handlerObj);
-        instance.setLevel(Level.ALL);
-        instance.setUseParentHandlers(false);
     }
 
     public static Logger getSingletonInstance() {
