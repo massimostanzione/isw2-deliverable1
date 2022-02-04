@@ -1,10 +1,10 @@
 package it.uniroma2.dicii.isw2.deliverable1.control;
 
+import it.uniroma2.dicii.isw2.deliverable1.entities.Commit;
 import it.uniroma2.dicii.isw2.deliverable1.entities.GitWorkingCopy;
 import it.uniroma2.dicii.isw2.deliverable1.io.CSVExporterPrinter;
 import it.uniroma2.dicii.isw2.deliverable1.utils.CollectionSorter;
 import it.uniroma2.dicii.isw2.deliverable1.utils.LoggerInst;
-import it.uniroma2.dicii.isw2.deliverable1.entities.Commit;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
@@ -31,7 +31,10 @@ public class GitHubMiddleware {
     public static final String DEFAULT_GIT_WORKINGCOPY_PATH = "/tmp/isw2-deliverable1";
     private static GitWorkingCopy ret;
 
-    private static Logger LOG = LoggerInst.getSingletonInstance();
+    private static Logger log = LoggerInst.getSingletonInstance();
+
+    private GitHubMiddleware() {
+    }
 
     /**
      * Download a project and instantiate local working copy, if it does not already exists.
@@ -42,17 +45,16 @@ public class GitHubMiddleware {
      */
     public static GitWorkingCopy createWorkingCopy(String projName, String remote, String version) {
         ret = new GitWorkingCopy();
-        LOG.info("Checking for working copy...");
+        log.info(() -> "Checking for working copy...");
         try {
             if (!Files.exists(Path.of(DEFAULT_GIT_WORKINGCOPY_PATH + "/" + projName))) {
-                LOG.info("- Creating working copy. It may take a while, please wait...");
+                log.info(() -> "- Creating working copy. It may take a while, please wait...");
                 Git.cloneRepository()
-                        .setProgressMonitor(new TextProgressMonitor(new PrintWriter(System.out)))
+                        .setProgressMonitor(new TextProgressMonitor(new PrintWriter(System.err)))
                         .setURI(remote).setBranch(version).setDirectory(new File(DEFAULT_GIT_WORKINGCOPY_PATH + "/" + projName)).call();
-                LOG.info("- Working copy is ready.");
+                log.info(() -> "- Working copy is ready.");
             } else {
-                LOG.info("- Working copy already exists locally at " + DEFAULT_GIT_WORKINGCOPY_PATH + "/"
-                        + projName + ".");
+                log.info(() -> "- Working copy already exists locally at " + DEFAULT_GIT_WORKINGCOPY_PATH + "/" + projName + ".");
             }
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             Repository repo = builder
@@ -71,11 +73,10 @@ public class GitHubMiddleware {
      * <code>Commit</code> form.
      *
      * @param projName project name
-     * @param wc       reference to the working copy
      * @return list of "non-raw" commits related to the project
      */
-    public static List<Commit> extractCommits(String projName, GitWorkingCopy wc) {
-        LOG.info("Extracting commits...");
+    public static List<Commit> extractCommits(String projName) {
+        log.info(() -> "Extracting commits...");
         List<Commit> commits = new ArrayList<>();
         Iterator<RevCommit> iter = null;
         // Extract raw RevCommit iterator
@@ -85,12 +86,16 @@ public class GitHubMiddleware {
             e.printStackTrace();
         }
         // Iterate through raw commits and convert them
-        while (iter.hasNext()) {
-            RevCommit iteratedCommit = iter.next();// ?
-            if (iteratedCommit.getParentCount() > 0) {
-                Commit c = new Commit(iteratedCommit);
-                commits.add(c);
+        try {
+            while (iter.hasNext()) {
+                RevCommit iteratedCommit = iter.next();// ?
+                if (iteratedCommit.getParentCount() > 0) {
+                    Commit c = new Commit(iteratedCommit);
+                    commits.add(c);
+                }
             }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         // Sort commit by their date
         try {
@@ -100,9 +105,7 @@ public class GitHubMiddleware {
         }
 
         CSVExporterPrinter.convertAndExport(commits, "/output/" + projName + "/inspection/commits.csv");
-        LOG.info("- "+commits.size() + " commits found.");
+        log.info(() -> "- " + commits.size() + " commits found.");
         return commits;
     }
-
- 
 }

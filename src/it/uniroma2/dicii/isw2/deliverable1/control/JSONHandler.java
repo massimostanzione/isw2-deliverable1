@@ -6,11 +6,16 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Utility class to manage JIRA REST API responses in JSON format.
  */
 public class JSONHandler {
+
+    private JSONHandler() {
+    }
+
     /**
      * Given an <code>url</code>, handle JSON response.
      *
@@ -20,15 +25,12 @@ public class JSONHandler {
      * @throws JSONException
      */
     public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-        InputStream is = new URL(url).openStream();
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            JSONObject json = new JSONObject(jsonText);
-            return json;
-        } finally {
-            is.close();
-        }
+        InputStream is = null;
+        is = new URL(url).openStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        String jsonText = readAll(rd);
+        is.close();
+        return new JSONObject(jsonText);
     }
 
     /**

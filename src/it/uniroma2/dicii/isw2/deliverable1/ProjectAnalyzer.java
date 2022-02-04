@@ -1,23 +1,25 @@
 package it.uniroma2.dicii.isw2.deliverable1;
 
+import it.uniroma2.dicii.isw2.deliverable1.control.GitHubMiddleware;
+import it.uniroma2.dicii.isw2.deliverable1.entities.Commit;
 import it.uniroma2.dicii.isw2.deliverable1.entities.DeliverableOneOutput;
 import it.uniroma2.dicii.isw2.deliverable1.entities.Project;
-import it.uniroma2.dicii.isw2.deliverable1.control.GitHubMiddleware;
-import it.uniroma2.dicii.isw2.deliverable1.utils.LoggerInst;
-import it.uniroma2.dicii.isw2.deliverable1.entities.Commit;
 import it.uniroma2.dicii.isw2.deliverable1.entities.Ticket;
 import it.uniroma2.dicii.isw2.deliverable1.io.CSVExporterPrinter;
+import it.uniroma2.dicii.isw2.deliverable1.utils.CollectionSorter;
+import it.uniroma2.dicii.isw2.deliverable1.utils.LoggerInst;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
  * Central "control" class, orchestrating all the operations proper of the deliverable I.
  */
 public class ProjectAnalyzer {
-    private static Logger LOG = LoggerInst.getSingletonInstance();
+    private static Logger log = LoggerInst.getSingletonInstance();
     private final Project p;
 
     public ProjectAnalyzer(Project p) {
@@ -30,13 +32,13 @@ public class ProjectAnalyzer {
      *
      * @throws Exception
      */
-    public void run() throws Exception {
-        LOG.info("Running analysis for " + p.getName() + ".");
+    public void run() {
+        log.info(() -> "Running analysis for " + p.getName() + ".");
         initializeProjectData();
         p.initializeBugList();
         p.setTicketList(arrangeFixTimestamp(p.getTicketList()));
         groupAndExport(p.getTicketList());
-        LOG.info("Finished.");
+        log.info(() -> "Finished.");
     }
 
     /**
@@ -54,27 +56,24 @@ public class ProjectAnalyzer {
                 Commit first = relatedCommits.get(0);
                 Date last = first.getDate();
                 for (Integer j = 0; j < relatedCommits.size(); j++) {
-                    if (relatedCommits.get(j).getDate() != null) {
-                        if (relatedCommits.get(j).getDate().after(last)) {
-                            last = relatedCommits.get(j).getDate();
-                        }
+                    if (relatedCommits.get(j).getDate() != null && relatedCommits.get(j).getDate().after(last)) {
+                        last = relatedCommits.get(j).getDate();
                     }
+
                 }
                 t.setFixTimestamp(last);
             } else {
-                LOG.fine("- Skipped ticket " + t.getID() + ": no commit assigned.");
+                log.fine("- Skipped ticket " + t.getId() + ": no commit assigned.");
                 t.setFixTimestamp(new Date(0));
             }
         }
         CSVExporterPrinter.convertAndExport(tickets, "/output/" + p.getName() + "/inspection/tickets.csv");
-
         // Sort by date
-        Collections.sort(tickets, new Comparator<Ticket>() {
-            @Override
-            public int compare(Ticket o1, Ticket o2) {
-                return o1.getFixTimestamp().compareTo(o2.getFixTimestamp());
-            }
-        });
+        try {
+            CollectionSorter.sort(tickets, Ticket.class.getDeclaredMethod("getFixTimestamp"));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         return tickets;
     }
 
@@ -84,13 +83,16 @@ public class ProjectAnalyzer {
      * @param tickets ticket list
      */
     public void groupAndExport(List<Ticket> tickets) {
-        List<DeliverableOneOutput> ret = new ArrayList();
-        Format f = new SimpleDateFormat("MMM yyyy");
+        Calendar cItem = Calendar.getInstance();
+        Calendar cTicket = Calendar.getInstance();
+        List<DeliverableOneOutput> ret = new ArrayList<DeliverableOneOutput>();
         for (Ticket t : tickets) {
             boolean found = false;
             for (DeliverableOneOutput item : ret) {
-                if ((item.getDate().getYear()) == (t.getFixTimestamp().getYear())
-                        && item.getDate().getMonth() == t.getFixTimestamp().getMonth()) {
+                cItem.setTime(item.getDate());
+                cTicket.setTime(t.getFixTimestamp());
+                if (cItem.get(Calendar.MONTH) == cTicket.get(Calendar.MONTH)
+                        && cItem.get(Calendar.YEAR) == cTicket.get(Calendar.YEAR)) {
                     found = true;
                     item.setOccurrencies(item.getOccurrencies() + 1);
                     break;
@@ -108,6 +110,6 @@ public class ProjectAnalyzer {
      */
     private void initializeProjectData() {
         p.setWorkingCopy(GitHubMiddleware.createWorkingCopy(p.getName(), p.getGitHubURL(), p.getGitHubVersion()));
-        p.setCommitList(GitHubMiddleware.extractCommits(p.getName(), p.getWorkingCopy()));
+        p.setCommitList(GitHubMiddleware.extractCommits(p.getName()));
     }
 }

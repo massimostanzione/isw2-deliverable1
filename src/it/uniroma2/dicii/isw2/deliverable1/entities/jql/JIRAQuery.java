@@ -16,17 +16,16 @@ import java.util.Map;
  * with respect to the "low-level" JQL syntax.
  */
 public class JIRAQuery {
-    private final static String JIRA_QUERY_PREFIX = "https://issues.apache.org/jira/rest/api/2/";
-    private final static String JQL_QUERY_START = "jql";
-
-    private final static String JIRA_PROJECT = "project";
-    private final static String JIRA_FIELDS = "fields";
-    private final static String JIRA_START_AT = "startAt";
-    private final static String JIRA_MAX_RESULTS = "maxResults";
+    private final String JIRA_QUERY_PREFIX = "https://issues.apache.org/jira/rest/api/2/";
+    private final String JQL_QUERY_START = "jql";
+    private final String JIRA_PROJECT = "project";
+    private final String JIRA_FIELDS = "fields";
+    private final String JIRA_START_AT = "startAt";
+    private final String JIRA_MAX_RESULTS = "maxResults";
 
     private JIRAQueryType queryType;
-    private JQLQuery JQLQuery = new JQLQuery();
-    private Map<String, List<String>> URLParameters = new HashMap<>();
+    private JQLQuery jqlQuery = new JQLQuery();
+    private Map<String, List<String>> urlParameters = new HashMap<>();
     private String projName;
 
     public JIRAQuery(JIRAQueryType queryType) {
@@ -34,19 +33,19 @@ public class JIRAQuery {
     }
 
     public void setFields(String... fields) {
-        this.URLParameters.put(JIRA_FIELDS, Arrays.asList(fields));
+        this.urlParameters.put(JIRA_FIELDS, Arrays.asList(fields));
     }
 
     public void setStartAt(Integer startAt) {
-        this.URLParameters.put(JIRA_START_AT, Arrays.asList(startAt.toString()));
+        this.urlParameters.put(JIRA_START_AT, Arrays.asList(startAt.toString()));
     }
 
     public void setMaxResults(Integer maxResults) {
-        this.URLParameters.put(JIRA_MAX_RESULTS, Arrays.asList(maxResults.toString()));
+        this.urlParameters.put(JIRA_MAX_RESULTS, Arrays.asList(maxResults.toString()));
     }
 
-    public JQLQuery getJQLQuery() {
-        return JQLQuery;
+    public JQLQuery getJqlQuery() {
+        return jqlQuery;
     }
 
     /**
@@ -63,20 +62,18 @@ public class JIRAQuery {
             } else {
                 b = new URIBuilder(JIRA_QUERY_PREFIX + this.queryType.label + "?");
             }
-            if (this.JQLQuery.getJQLPropertiesCount() > 0) {
-                b.addParameter(JQL_QUERY_START, this.JQLQuery.compose());
+            if (this.jqlQuery.getJQLPropertiesCount() > 0) {
+                b.addParameter(JQL_QUERY_START, this.jqlQuery.compose());
             }
-            for (Map.Entry<String, List<String>> entry : this.URLParameters.entrySet()) {
+            for (Map.Entry<String, List<String>> entry : this.urlParameters.entrySet()) {
                 if (!entry.getKey().equals(JIRA_PROJECT)) {
                     b.addParameter(entry.getKey(), StringUtils.join(entry.getValue(), ","));
                 }
             }
             url = b.build().toURL();
         } catch (URISyntaxException | MalformedURLException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         return url;
     }
-
 }

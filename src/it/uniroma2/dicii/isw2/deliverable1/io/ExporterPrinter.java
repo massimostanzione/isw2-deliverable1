@@ -10,11 +10,10 @@ import java.util.logging.Logger;
  * This is more useful in deliverable II, since there are both CSV and ARFF formats to be managed.
  */
 public abstract class ExporterPrinter implements Exporter {
-    private static Logger instance = null;
     protected static FileWriter fileWriter;
-    protected static Logger LOG = LoggerInst.getSingletonInstance();
+    protected static Logger log = LoggerInst.getSingletonInstance();
 
     protected static void printLog(String outname) {
-        LOG.fine("Exporting dataset to " + outname + ".");
+        log.fine(() -> "Exporting dataset to " + outname + ".");
     }
 }

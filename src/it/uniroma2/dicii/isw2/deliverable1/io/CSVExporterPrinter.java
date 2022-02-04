@@ -26,15 +26,18 @@ public class CSVExporterPrinter extends ExporterPrinter {
         try {
             File file = new File(outname);
             file.getParentFile().mkdirs();
-            file.createNewFile();
+            boolean alreadyExisted = file.createNewFile();
+            if (alreadyExisted)
+                log.finer("CSV target fil already existed.");
             fileWriter = new FileWriter(file);
-            Integer i = -1, j = -1;
-            if (dataset.size() > 0) {
+            Integer i = -1;
+            Integer j = -1;
+            if (!dataset.isEmpty()) {
                 Integer recordDim = dataset.get(0).size();
-                for (List<String> record : dataset) {
+                for (List<String> datasetRecord : dataset) {
                     i++;
                     j = -1;
-                    for (String value : record) {
+                    for (String value : datasetRecord) {
                         j++;
                         fileWriter.append(value);
                         fileWriter.append(j + 1 < recordDim ? "," : "\n");
@@ -56,7 +59,7 @@ public class CSVExporterPrinter extends ExporterPrinter {
      */
     public static List<List<String>> convertToCSVExportable(List<?> objList) {
         List<List<String>> ret = new ArrayList<>();
-        if (objList.size() > 0) {
+        if (!objList.isEmpty()) {
             ret = Stream
                     .concat(ret.stream(), ((ExportableAsDatasetRecord) objList.get(0)).getDatasetAttributes().stream())
                     .collect(Collectors.toList());

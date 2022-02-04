@@ -10,6 +10,10 @@ import java.util.List;
  * Class for commit handling.
  */
 public class CommitHandler {
+
+    private CommitHandler() {
+    }
+
     /**
      * Given a ticket and a commit list, return a sublist of the commits that are related to the ticket
      *
@@ -20,9 +24,9 @@ public class CommitHandler {
     public static List<Commit> fetchCommitsRelatedToTicket(Ticket ticket, List<Commit> commitList) {
         List<Commit> ret = new ArrayList<>();
         for (Commit iteratedCommit : commitList) {
-            if (iteratedCommit.getCommitMsg().contains(ticket.getID() + (":"))
-                    || iteratedCommit.getCommitMsg().contains(ticket.getID() + " ")
-                    || iteratedCommit.getCommitMsg().contains(ticket.getID() + "]")) {
+            if (iteratedCommit.getCommitMsg().contains(ticket.getId() + (":"))
+                    || iteratedCommit.getCommitMsg().contains(ticket.getId() + " ")
+                    || iteratedCommit.getCommitMsg().contains(ticket.getId() + "]")) {
                 ret.add(iteratedCommit);
             }
         }

@@ -20,8 +20,8 @@ public abstract class ExportableAsDatasetRecord {
 
     public abstract List<List<String>> getDatasetRecord();
 
-    protected void setDatasetRecord(Object... record) {
-        this.datasetRecord = convert(record);
+    protected void setDatasetRecord(Object... datasetRecord) {
+        this.datasetRecord = convert(datasetRecord);
     }
 
     /**

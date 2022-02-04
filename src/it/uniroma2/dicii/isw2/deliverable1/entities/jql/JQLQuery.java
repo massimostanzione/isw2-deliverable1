@@ -10,43 +10,41 @@ import java.util.Map;
  */
 public class JQLQuery {
     // A collection of JQL tags
-    private final static String JQL_PROJECT_NAME = "project";
-    private final static String JQL_ISSUE_TYPE = "issueType";
-    private final static String JQL_STATUS = "status";
-    private final static String JQL_RESOLUTION = "resolution";
+    private static final String JQL_PROJECT_NAME = "project";
+    private static final String JQL_ISSUE_TYPE = "issueType";
+    private static final String JQL_STATUS = "status";
+    private static final String JQL_RESOLUTION = "resolution";
+    public static final String JQL_ISSUE_TYPE_BUG = "Bug";
+    public static final String JQL_STATUS_CLOSED = "closed";
+    public static final String JQL_STATUS_RESOLVED = "resolved";
+    public static final String JQL_STATUS_DONE = "done";
+    public static final String JQL_RESOLUTION_FIXED = "fixed";
+    public static final String JQL_RESOLUTION_DONE = "done";
+    public static final String JQL_FIELD_KEY = "key";
+    public static final String JQL_FIELD_RESOLUTIONDATE = "resolutiondate";
+    public static final String JQL_FIELD_FIXVERSIONS = "fixVersions";
+    public static final String JQL_FIELD_CREATED = "created";
 
-    public final static String JQL_FIELDS = "fields";
-    public final static String JQL_ISSUE_TYPE_BUG = "Bug";
-    public final static String JQL_STATUS_CLOSED = "closed";
-    public final static String JQL_STATUS_RESOLVED = "resolved";
-    public final static String JQL_STATUS_DONE = "done";
-    public final static String JQL_RESOLUTION_FIXED = "fixed";
-    public final static String JQL_RESOLUTION_DONE = "done";
-    public final static String JQL_FIELD_KEY = "key";
-    public final static String JQL_FIELD_RESOLUTIONDATE = "resolutiondate";
-    public final static String JQL_FIELD_FIXVERSIONS = "fixVersions";
-    public final static String JQL_FIELD_CREATED = "created";
-
-    private Map<String, List<String>> JQLProperties = new HashMap<>();
+    private Map<String, List<String>> jqlProperties = new HashMap<>();
 
     public Integer getJQLPropertiesCount() {
-        return JQLProperties.size();
+        return jqlProperties.size();
     }
 
     public void setProjectName(String projName) {
-        this.JQLProperties.put(JQL_PROJECT_NAME, Arrays.asList(projName));
+        this.jqlProperties.put(JQL_PROJECT_NAME, Arrays.asList(projName));
     }
 
     public void setIssueType(String... issueTypes) {
-        this.JQLProperties.put(JQL_ISSUE_TYPE, Arrays.asList(issueTypes));
+        this.jqlProperties.put(JQL_ISSUE_TYPE, Arrays.asList(issueTypes));
     }
 
     public void setStatus(String... statusList) {
-        this.JQLProperties.put(JQL_STATUS, Arrays.asList(statusList));
+        this.jqlProperties.put(JQL_STATUS, Arrays.asList(statusList));
     }
 
     public void setResolution(String... resolution) {
-        this.JQLProperties.put(JQL_RESOLUTION, Arrays.asList(resolution));
+        this.jqlProperties.put(JQL_RESOLUTION, Arrays.asList(resolution));
     }
 
     /**
@@ -55,24 +53,23 @@ public class JQLQuery {
      * @return a JQL query.
      */
     public String compose() {
-        String ret = null;
         Integer i = -1;
-
-        ret = "(";
-        for (Map.Entry<String, List<String>> entry : this.JQLProperties.entrySet()) {
+        StringBuilder bld = new StringBuilder();
+        bld.append("(");
+        for (Map.Entry<String, List<String>> entry : this.jqlProperties.entrySet()) {
             i++;
             for (Integer j = 0; j < entry.getValue().size(); j++) {
-                ret += "\"" + entry.getKey() + "\"=";
-                ret += "\"" + entry.getValue().get(j) + "\"";
+                bld.append("\"" + entry.getKey() + "\"=");
+                bld.append("\"" + entry.getValue().get(j) + "\"");
                 if (j < entry.getValue().size() - 1) {
-                    ret += "OR";
+                    bld.append("OR");
                 }
             }
-            ret += ")";
-            if (i < this.JQLProperties.entrySet().size() - 1) {
-                ret += "AND(";
+            bld.append(")");
+            if (i < this.jqlProperties.entrySet().size() - 1) {
+                bld.append("AND(");
             }
         }
-        return ret;
+        return bld.toString();
     }
 }

@@ -10,6 +10,10 @@ import java.util.List;
  * Utility class, used to cmpare object, usually Tickets or Commits, based on a specific object method name
  */
 public class CollectionSorter {
+
+    private CollectionSorter() {
+    }
+
     /**
      * Sort a <code>List</code> of items, based on a result returned by a method.
      *
@@ -17,15 +21,13 @@ public class CollectionSorter {
      * @param method method whose return value is used as comparator
      */
     public static void sort(List<?> list, Method method) {
-        Collections.sort(list, new Comparator<Object>() {
-            public int compare(Object o1, Object o2) {
-                try {
-                    return ((Comparable<Comparable>) method.invoke(o1)).compareTo((Comparable<?>) method.invoke(o2));
-                } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-                return 0;
+        Collections.sort(list, (Comparator<Object>) (o1, o2) -> {
+            try {
+                return ((Comparable<Comparable>) method.invoke(o1)).compareTo((Comparable<Comparable>) method.invoke(o2));
+            } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                e.printStackTrace();
             }
+            return 0;
         });
     }
 }

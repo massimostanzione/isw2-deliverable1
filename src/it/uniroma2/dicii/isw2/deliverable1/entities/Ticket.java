@@ -8,21 +8,21 @@ import java.util.List;
  */
 public class Ticket extends ExportableAsDatasetRecord {
 
-    private String ID;
+    private String id;
     private Date creationTimestamp;
     private Date fixTimestamp;
     private List<Commit> commitList;
 
     public Ticket(String key) {
-        this.ID = key;
+        this.id = key;
     }
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
-    public void setID(String iD) {
-        ID = iD;
+    public void setId(String iD) {
+        id = iD;
     }
 
     public Date getCreationTimestamp() {
@@ -57,7 +57,7 @@ public class Ticket extends ExportableAsDatasetRecord {
 
     @Override
     public List<List<String>> getDatasetRecord() {
-        this.setDatasetRecord(this.ID, this.fixTimestamp);
+        this.setDatasetRecord(this.id, this.fixTimestamp);
         return this.datasetRecord;
     }
 }
