@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       - image: 'circleci/openjdk:11-jdk'
-    resource-class: medium
+    resource_class: medium
     steps:
       - checkout
       - run:
