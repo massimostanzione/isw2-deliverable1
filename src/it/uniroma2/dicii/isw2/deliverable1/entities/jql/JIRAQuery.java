@@ -1,5 +1,6 @@
 package it.uniroma2.dicii.isw2.deliverable1.entities.jql;
 
+import it.uniroma2.dicii.isw2.deliverable1.utils.LoggerInst;
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.jgit.util.StringUtils;
 
@@ -10,12 +11,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * A JIRA Query, as an intermediate layer for handling the "high-level" parameters
  * with respect to the "low-level" JQL syntax.
  */
 public class JIRAQuery {
+    private static Logger log = LoggerInst.getSingletonInstance();
+    
     private static final String JIRA_QUERY_PREFIX = "https://issues.apache.org/jira/rest/api/2/";
     private static final String JQL_QUERY_START = "jql";
     private static final String JIRA_PROJECT = "project";
@@ -71,8 +75,8 @@ public class JIRAQuery {
                 }
             }
             url = b.build().toURL();
-        } catch (URISyntaxException | MalformedURLException e1) {
-            e1.printStackTrace();
+        } catch (URISyntaxException | MalformedURLException e) {
+            log.severe(e.getMessage());
         }
         return url;
     }
