@@ -15,11 +15,7 @@ public class Main {
         List<Project> beingAnalyzed = new ArrayList<>();
         beingAnalyzed.add(p1);
         for (Integer i = 0; i < beingAnalyzed.size(); i++) {
-            try {
-                new ProjectAnalyzer(beingAnalyzed.get(i)).run();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            new ProjectAnalyzer(beingAnalyzed.get(i)).run();
         }
     }
 }

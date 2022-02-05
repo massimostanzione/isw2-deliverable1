@@ -71,7 +71,7 @@ public class ProjectAnalyzer {
         try {
             CollectionSorter.sort(tickets, Ticket.class.getDeclaredMethod("getFixTimestamp"));
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            log.severe(e.getMessage());
         }
         return tickets;
     }

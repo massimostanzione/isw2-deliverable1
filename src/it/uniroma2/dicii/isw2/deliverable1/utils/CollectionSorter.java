@@ -5,11 +5,13 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Utility class, used to cmpare object, usually Tickets or Commits, based on a specific object method name
  */
 public class CollectionSorter {
+    protected static Logger log = LoggerInst.getSingletonInstance();
 
     private CollectionSorter() {
     }
@@ -25,7 +27,7 @@ public class CollectionSorter {
             try {
                 return ((Comparable<Object>) method.invoke(o1)).compareTo(method.invoke(o2));
             } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                e.printStackTrace();
+                log.severe(e.getMessage());
             }
             return 0;
         });

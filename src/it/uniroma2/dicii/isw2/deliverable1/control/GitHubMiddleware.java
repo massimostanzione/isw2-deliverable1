@@ -63,7 +63,7 @@ public class GitHubMiddleware {
             Git git = new Git(repo);
             ret.setGit(git);
         } catch (GitAPIException | IOException e) {
-            e.printStackTrace();
+            log.severe(e.getMessage());
         }
         return ret;
     }
@@ -90,14 +90,14 @@ public class GitHubMiddleware {
                 }
             }
         } catch (RevisionSyntaxException | GitAPIException | IOException e) {
-            e.printStackTrace();
+            log.severe(e.getMessage());
         }
 
         // Sort commit by their date
         try {
             CollectionSorter.sort(commits, Commit.class.getDeclaredMethod("getDate"));
         } catch (NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
+            log.severe(e.getMessage());
         }
         CSVExporterPrinter.getSingletonInstance().convertAndExport(commits, "/output/" + projName + "/inspection/commits.csv");
         log.info(() -> "- " + commits.size() + " commits found.");

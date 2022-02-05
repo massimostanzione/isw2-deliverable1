@@ -19,7 +19,7 @@ public class LoggerInst {
             LogManager.getLogManager().readConfiguration(stream);
             instance = Logger.getLogger(LoggerInst.class.getName());
         } catch (IOException e) {
-            e.printStackTrace();
+            instance.severe(e.getMessage());
         }
     }
 

@@ -71,7 +71,7 @@ public class TicketBugHandler {
                     tickets.add(iteratedTicket);
                 }
             } catch (IOException | JSONException e) {
-                e.printStackTrace();
+                log.severe(e.getMessage());
             }
         } while (i < total);
 
