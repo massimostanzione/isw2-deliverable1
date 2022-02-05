@@ -15,6 +15,7 @@ import java.util.stream.Stream;
  */
 public class CSVExporterPrinter extends ExporterPrinter {
     private static CSVExporterPrinter instance;
+
     private CSVExporterPrinter() {
         super();
     }
@@ -38,10 +39,10 @@ public class CSVExporterPrinter extends ExporterPrinter {
         try {
             File file = new File(outname);
             file.getParentFile().mkdirs();
-            boolean alreadyExisted = file.createNewFile();
-            if (alreadyExisted)
-                log.finer("CSV target fil already existed.");
-            fileWriter = new FileWriter(file);
+            boolean alreadyExists = file.createNewFile();
+            if (alreadyExists)
+                log.finer("CSV target file already exists.");
+            this.fileWriter = new FileWriter(file);
             Integer i = -1;
             Integer j = -1;
             if (!dataset.isEmpty()) {
@@ -51,12 +52,12 @@ public class CSVExporterPrinter extends ExporterPrinter {
                     j = -1;
                     for (String value : datasetRecord) {
                         j++;
-                        fileWriter.append(value);
-                        fileWriter.append(j + 1 < recordDim ? "," : "\n");
+                        this.fileWriter.append(value);
+                        this.fileWriter.append(j + 1 < recordDim ? "," : "\n");
                     }
                 }
             }
-            fileWriter.close();
+            this.fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

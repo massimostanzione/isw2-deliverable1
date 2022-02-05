@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  * manage working copies of the analyzed projects.
  */
 public class GitHubMiddleware {
-    public static final String DEFAULT_GIT_WORKINGCOPY_PATH = "/tmp/isw2-deliverable1";
+    public static final String DEFAULT_GIT_WORKINGCOPY_PATH = System.getProperty("java.io.tmpdir")+"/isw2-deliverable1";
     private static GitWorkingCopy ret;
 
     private static Logger log = LoggerInst.getSingletonInstance();

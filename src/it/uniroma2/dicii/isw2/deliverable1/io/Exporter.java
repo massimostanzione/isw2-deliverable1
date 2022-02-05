@@ -34,6 +34,4 @@ public interface Exporter {
      */
     static void convertAndExport(List<?> objList, String path) {
     }
-
-    ;
 }
