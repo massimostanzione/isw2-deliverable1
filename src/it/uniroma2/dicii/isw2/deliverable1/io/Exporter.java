@@ -16,7 +16,9 @@ public interface Exporter {
      * @param dataset dataset to be exported
      * @param outname output file
      */
-    void export(List<List<String>> dataset, String outname);
+    static void export(List<List<String>> dataset, String outname) {
+
+    }
 
     /**
      * Adapt dataset to a standardized dataset that can be arranged in a specific way.

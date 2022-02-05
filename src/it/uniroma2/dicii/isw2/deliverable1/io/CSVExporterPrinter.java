@@ -33,7 +33,7 @@ public class CSVExporterPrinter extends ExporterPrinter {
      * @param dataset dataset to be exported
      * @param outname output file
      */
-    public void export(List<List<String>> dataset, String outname) {
+    public static void export(List<List<String>> dataset, String outname) {
         outname = System.getProperty("user.dir") + outname;
         printLog(outname);
         try {
@@ -42,7 +42,7 @@ public class CSVExporterPrinter extends ExporterPrinter {
             boolean alreadyExists = file.createNewFile();
             if (alreadyExists)
                 log.finer("CSV target file already exists.");
-            this.fileWriter = new FileWriter(file);
+            fileWriter = new FileWriter(file);
             Integer i = -1;
             Integer j = -1;
             if (!dataset.isEmpty()) {
@@ -52,12 +52,12 @@ public class CSVExporterPrinter extends ExporterPrinter {
                     j = -1;
                     for (String value : datasetRecord) {
                         j++;
-                        this.fileWriter.append(value);
-                        this.fileWriter.append(j + 1 < recordDim ? "," : "\n");
+                        fileWriter.append(value);
+                        fileWriter.append(j + 1 < recordDim ? "," : "\n");
                     }
                 }
             }
-            this.fileWriter.close();
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
